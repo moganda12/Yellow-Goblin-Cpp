@@ -9,6 +9,12 @@ using namespace chrono;
 
 using str = string;
 
+struct item {
+    int id;
+    str name;
+    str description;
+};
+
 int main() {
     str planetname = "I don't know yet";
     str mountainname = "Mt. Cheesecutter";
