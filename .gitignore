@@ -1,2 +1,6 @@
 main
 .vscode/
+.git/
+.ccls-cache
+.replit
+replit.nix
