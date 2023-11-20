@@ -55,5 +55,9 @@ int main() {
             break;
     }
     cout << "Ok " << pronouns[2] << " name is " << name << ".\n";
+    sleep_for(seconds(2));
+    cout << "Being yellow " << name << " was banished from goblin society.\n";
+    sleep_for(seconds(2));
+    cout << pronouns[0] << " is now cold and alone on " << mountainname << ".\n";
     return 0;
 }
