@@ -2,18 +2,42 @@
 #include <cmath>
 #include <thread>
 #include <chrono>
+#include <iomanip>
+#include <stdlib.h>
+#include <vector>
 
 using namespace std;
 using namespace this_thread;
 using namespace chrono;
 
 using str = string;
+using list = vector<double>;
+using inventory = vector<item>;
 
 struct item {
     int id;
     str name;
     str description;
 };
+
+void threadDelay(int microsecs) {
+    sleep_for(microseconds(microsecs));
+}
+
+item inititem(int id, str name, str description, inventory& items) {
+    item i;
+    i.id = id;
+    i.name = name;
+    i.description = description;
+    items[i.id] = i;
+    return i;
+}
+
+void printitem(const item& itm) {
+    cout << itm.name << '\n' << itm.description << '\n';
+}
+
+void printinventory(const array<item>& items) {}
 
 int main() {
     str planetname = "I don't know yet";
@@ -64,6 +88,9 @@ int main() {
     sleep_for(seconds(2));
     cout << "Being yellow " << name << " was banished from goblin society.\n";
     sleep_for(seconds(2));
-    cout << pronouns[0] << " is now cold and alone on " << mountainname << ".\n";
+    cout << pronouns[0] << " is now cold and alone on " << mountainname << endl;
+    inventory debug_items;
+    inititem(0, "focusing lens", "a small and mysterious lens.\n can put in FOCUS slot.", debug_items);
+    inititem(1, "rainbow focusing lens", "a small and mysterious lens that seems to change color.\n can put in FOCUS slot.", debug_items);
     return 0;
 }
