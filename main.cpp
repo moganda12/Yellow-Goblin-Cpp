@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <vector>
+#include <random>
 
 using namespace std;
 using namespace this_thread;
@@ -12,36 +13,45 @@ using namespace chrono;
 
 using str = string;
 using list = vector<double>;
-using inventory = vector<item>;
 
 struct item {
     int id;
-    str name;
-    str description;
+    str* name;
+    str* description;
 };
+
+using inventory = vector<item>;
 
 void threadDelay(int microsecs) {
     sleep_for(microseconds(microsecs));
 }
 
-item inititem(int id, str name, str description, inventory& items) {
-    item i;
-    i.id = id;
-    i.name = name;
-    i.description = description;
-    items[i.id] = i;
-    return i;
+void inititem(int id, str name, str description, inventory& items) {
+    items[id] = {id, &name, &description};
 }
 
 void printitem(const item& itm) {
     cout << itm.name << '\n' << itm.description << '\n';
 }
 
-void printinventory(const array<item>& items) {}
+void printinventory(const inventory& items) {
+    for (int i = 0; i < items.size(); i++) {
+        cout << items[i].name << '\n';
+    }
+}
 
 int main() {
+    srand(time(NULL));
     str planetname = "I don't know yet";
     str mountainname = "Mt. Cheesecutter";
+    vector<str> flavortext = {"Made with love and passion", "Foo 8-bit Chars", "FOCUS on the map", "Mt. WHO CUT THE CHEESE!", "Poke it with color", "The best cheese in the world", "The best cheese in the universe", "A NOT documetary", "Play Dwarf Fortress", "A dragon made this", "YellowGoblin ver WHAT? Look up(If you can)"};
+    int flavortextnumber = flavortext.size();
+    int flavortextindex = rand() % flavortextnumber;
+    cout << "YellowGoblin ver 0.0.0.1\n\n\n\n";
+    threadDelay(10000000);
+    system("color 06");
+    cout << flavortext[flavortextindex] << '\n';
+    system("color 07");
     cout << "On the planet of, " << planetname << ',' << flush;
     sleep_for(seconds(1));
     cout << " goblins come in many diffent colors!\n";
@@ -91,6 +101,8 @@ int main() {
     cout << pronouns[0] << " is now cold and alone on " << mountainname << endl;
     inventory debug_items;
     inititem(0, "focusing lens", "a small and mysterious lens.\n can put in FOCUS slot.", debug_items);
-    inititem(1, "rainbow focusing lens", "a small and mysterious lens that seems to change color.\n can put in FOCUS slot.", debug_items);
+    inititem(1, "rainbow focusing lens", "a small and mysterious lens that seems to change color every second.\n can put in FOCUS slot.", debug_items);
+    inititem(2, "Slimy Apple", "An apple covered in nutritios slime.\n FOOD 10 HG", debug_items);
+    inititem(3, "Goofy Apple", "Food with a personality! It makes you laugh every time you look at it.\n FOOD 7 HG 1 HP", debug_items);
     return 0;
 }
