@@ -7,6 +7,8 @@
 #include <vector>
 #include <random>
 
+#include "grafix sistem/main.h"
+
 using namespace std;
 using namespace this_thread;
 using namespace chrono;
@@ -16,8 +18,8 @@ using list = vector<double>;
 
 struct item {
     int id;
-    str* name;
-    str* description;
+    str name;
+    str description;
 };
 
 using inventory = vector<item>;
@@ -27,7 +29,7 @@ void threadDelay(int microsecs) {
 }
 
 void inititem(int id, str name, str description, inventory& items) {
-    items[id] = {id, &name, &description};
+    items[id] = {id, name, description};
 }
 
 void printitem(const item& itm) {
