@@ -2,12 +2,23 @@
 #include <cmath>
 #include <thread>
 #include <chrono>
+#include <string>
 
-using namespace std;
-using namespace this_thread;
-using namespace chrono;
+#include "./TextGridGameEngine/main.hpp"
 
-using str = string;
+#include <fstream>
+#include <locale.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+
+using str = std::string;
+using wchar = wchar_t;
 
 struct item {
     int id;
@@ -15,55 +26,72 @@ struct item {
     str description;
 };
 
+
+void threadDelay(int μs) {
+	std::this_thread::sleep_for(std::chrono::microseconds(μs));
+};
+
+
 int main() {
-    str planetname = "I don't know yet";
-    str mountainname = "Mt. Cheesecutter";
-    cout << "On the planet of, " << planetname << ',' << flush;
-    sleep_for(seconds(1));
-    cout << " goblins come in many diffent colors!\n";
-    sleep_for(seconds(2));
-    cout << "But most of the goblins are red or blue. " << flush;
-    sleep_for(seconds(1));
-    cout << "Red and blue goblins hate each other\n";
-    sleep_for(seconds(2));
-    cout << "But one day a yellow goblin was born, and their name is...\n";
-    str name;
-    cout << "Name: ";
-    getline(cin >> ws, name);
-    sleep_for(seconds(2));
-    array<str, 3> pronouns;
-    char pronoun;
-    cout << "Pronouns: he/him[h] she/her[s]  they/them[t]\nPronouns:";
-    cin >> pronoun;
+	setlocale( LC_ALL, "" );
+
+	TextEngine::init();
+
+	TextEngine::print();
+	
+    wstr planetname = L"I don't know yet";
+    wstr mountainname = L"Mt. Cheesecutter";
+
+	pos cont = {0,0};
+	
+	TextEngine::cout << L"On the planet of " << planetname << L',';
+    threadDelay(1000000);
+    std::cout << " goblins come in many diffent colors!\n";
+    threadDelay(2000000);
+    std::cout << "But most of the goblins are red or blue. " << std::flush;
+    threadDelay(1000000);
+    std::cout << "Red and blue goblins hate each other\n";
+    threadDelay(2000000);
+    std::cout << "But one day a yellow goblin was born, and their name is...\n";
+    wstr name;
+    std::cout << "Name: ";
+    getline(std::wcin >> std::ws, name);
+	
+    threadDelay(2000000);
+    std::array<wstr, 3> pronouns;
+    wchar pronoun;
+    std::wcout << "Pronouns: he/him[h] she/her[s]  they/them[t]\nPronouns:";
+    std::wcin >> pronoun;
     switch (pronoun) {
-        case 'h':
-        case 'H':
-            pronouns[0] = "he";
-            pronouns[1] = "him";
-            pronouns[2] = "his";
+        case L'h':
+        case L'H':
+            pronouns[0] = L"he";
+            pronouns[1] = L"him";
+            pronouns[2] = L"his";
             break;
-        case 's':
-        case 'S':
-            pronouns[0] = "she";
-            pronouns[1] = "her";
-            pronouns[2] = "her";
+        case L's':
+        case L'S':
+            pronouns[0] = L"she";
+            pronouns[1] = L"her";
+            pronouns[2] = L"her";
             break;
-        case 't':
-        case 'T':
-            pronouns[0] = "they";
-            pronouns[1] = "them";
-            pronouns[2] = "their";
+        case L't':
+        case L'T':
+            pronouns[0] = L"they";
+            pronouns[1] = L"them";
+            pronouns[2] = L"their";
             break;
         default:
-            pronouns[0] = "he";
-            pronouns[1] = "him";
-            pronouns[2] = "his";
+            pronouns[0] = L"he";
+            pronouns[1] = L"him";
+            pronouns[2] = L"his";
             break;
     }
-    cout << "Ok " << pronouns[2] << " name is " << name << ".\n";
-    sleep_for(seconds(2));
-    cout << "Being yellow " << name << " was banished from goblin society.\n";
-    sleep_for(seconds(2));
-    cout << pronouns[0] << " is now cold and alone on " << mountainname << ".\n";
+	
+    std::wcout << L"Ok " << pronouns[2] << L" name is " << name << L".\n";
+    threadDelay(2000000);
+    std::wcout << L"Being yellow " << name << L" was banished from goblin society.\n";
+    threadDelay(2000000);
+    std::wcout << pronouns[0] << L" is now cold and alone on " << mountainname << L".\n";
     return 0;
 }

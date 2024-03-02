@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
@@ -7,7 +9,7 @@ using namespace std;
 
 typedef string str;
 
-int main() {
+int run() {
     bool running = true;
     char operand;
     float num1, num2, result;

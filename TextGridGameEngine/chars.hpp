@@ -1,0 +1,21 @@
+
+using wchar = wchar_t;
+
+const wchar fullBlock = L'█';
+const wchar darkShade = L'▓';
+const wchar meduimShade = L'▒';
+const wchar lightShade = L'░';
+const wchar smile = L'☺';
+const wchar blackSmile = L'☻';
+const wchar blackHeart = L'♡';
+const wchar doubleCorner1 = L'╔';
+const wchar doubleDownT = L'╦';
+const wchar DoubleHorizontalLine = L'═';
+const wchar doubleCorner2 = L'╗';
+const wchar doubleRightT = L'╠';
+const wchar DoublePlusline = L'╬';
+const wchar doubleLeftT = L'╣';
+const wchar doubleVertLine = L'║';
+const wchar doubleCorner3 = L'╚';
+const wchar doubleUpT = L'╩';
+const wchar doubleCorner4 = L'╝';
