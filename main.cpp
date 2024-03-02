@@ -4,18 +4,6 @@
 #include <chrono>
 #include <string>
 
-#include "./TextGridGameEngine/main.hpp"
-
-#include <fstream>
-#include <locale.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
 
 using str = std::string;
 using wchar = wchar_t;
@@ -26,7 +14,6 @@ struct item {
     str description;
 };
 
-
 void threadDelay(int μs) {
 	std::this_thread::sleep_for(std::chrono::microseconds(μs));
 };
@@ -35,16 +22,11 @@ void threadDelay(int μs) {
 int main() {
 	setlocale( LC_ALL, "" );
 
-	TextEngine::init();
 
-	TextEngine::print();
+	str planetname = "I don't know yet";
+	str mountainname = "Mt. Cheescutter";
 	
-    wstr planetname = L"I don't know yet";
-    wstr mountainname = L"Mt. Cheesecutter";
-
-	pos cont = {0,0};
-	
-	TextEngine::cout << L"On the planet of " << planetname << L',';
+	std::cout << L"On the planet of " << planetname << L',';
     threadDelay(1000000);
     std::cout << " goblins come in many diffent colors!\n";
     threadDelay(2000000);
@@ -53,45 +35,44 @@ int main() {
     std::cout << "Red and blue goblins hate each other\n";
     threadDelay(2000000);
     std::cout << "But one day a yellow goblin was born, and their name is...\n";
-    wstr name;
+    str name;
     std::cout << "Name: ";
-    getline(std::wcin >> std::ws, name);
+    getline(std::cin >> std::ws, name);
 	
     threadDelay(2000000);
-    std::array<wstr, 3> pronouns;
-    wchar pronoun;
+    std::array<str, 3> pronouns;
+    char pronoun;
     std::wcout << "Pronouns: he/him[h] she/her[s]  they/them[t]\nPronouns:";
-    std::wcin >> pronoun;
     switch (pronoun) {
         case L'h':
         case L'H':
-            pronouns[0] = L"he";
-            pronouns[1] = L"him";
-            pronouns[2] = L"his";
+            pronouns[0] = "he";
+            pronouns[1] = "him";
+            pronouns[2] = "his";
             break;
         case L's':
         case L'S':
-            pronouns[0] = L"she";
-            pronouns[1] = L"her";
-            pronouns[2] = L"her";
+            pronouns[0] = "she";
+            pronouns[1] = "her";
+            pronouns[2] = "her";
             break;
         case L't':
         case L'T':
-            pronouns[0] = L"they";
-            pronouns[1] = L"them";
-            pronouns[2] = L"their";
+            pronouns[0] = "they";
+            pronouns[1] = "them";
+            pronouns[2] = "their";
             break;
         default:
-            pronouns[0] = L"he";
-            pronouns[1] = L"him";
-            pronouns[2] = L"his";
+            pronouns[0] = "he";
+            pronouns[1] = "him";
+            pronouns[2] = "his";
             break;
     }
 	
-    std::wcout << L"Ok " << pronouns[2] << L" name is " << name << L".\n";
+    std::cout << "Ok " << pronouns[2] << " name is " << name << ".\n";
     threadDelay(2000000);
-    std::wcout << L"Being yellow " << name << L" was banished from goblin society.\n";
+    std::cout << "Being yellow " << name << " was banished from goblin society.\n";
     threadDelay(2000000);
-    std::wcout << pronouns[0] << L" is now cold and alone on " << mountainname << L".\n";
+    std::cout << pronouns[0] << " is now cold and alone on " << mountainname << ".\n";
     return 0;
-}
+};
