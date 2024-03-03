@@ -4,6 +4,4 @@ project(YellowGoblin)
 
 set(CMAKE_CXX_STANDARD 20)
 
-
-
 add_executable(snobbygobby main.cpp)
