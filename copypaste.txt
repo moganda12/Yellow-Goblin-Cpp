@@ -1,7 +1,4 @@
-
-using wchar = wchar_t;
-
-const wchar fullBlock = L'█';
+█
 const wchar darkShade = L'▓';
 const wchar meduimShade = L'▒';
 const wchar lightShade = L'░';

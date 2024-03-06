@@ -27,6 +27,7 @@
 #define WHITE 7
 
 using str = std::string;
+using window = WINDOW*;
 
 //defines constants
 const str planetName = "I don't know yet";
@@ -50,6 +51,15 @@ inline int middle(int chars, int winx) {
 	return winx/2-chars/2;
 };
 
+inline void nwbgdset(window win ,short int pair) {
+	cchar_t cch;
+	setcchar(&cch, L" ", NULL, pair, NULL);
+	wbkgrndset(win, &cch);
+};
+
+inline void colorate(window win, short pair) {
+	wattr_set(win, NULL, pair, NULL);
+}
 
 //defines tile struct
 struct Tile {
@@ -124,13 +134,39 @@ public:
 	}
 
 	void setState(int state, int y, int x) {
+		//Set the state of tile at yx coordinate
 		tiles[y][x].state = state;
 	}
 
 	void setTile(int tile, int y, int x) {
+		//Set the tile at yx coordinate
 		tiles[y][x].tile = tile;
 	}
 };
+
+
+class Entity {
+private:
+	str c;
+	int pair;
+
+public:
+	int y;
+	int x;
+
+	Entity(int starty, int startx) {
+		y = starty;
+		x = startx;
+	};
+
+	void draw(WINDOW* win) {
+		if (pair != 0) {
+			attron(COLOR_PAIR(pair));
+		}
+		
+	}
+};
+
 
 
 inline void c2p() {
@@ -194,24 +230,24 @@ chooseNoun:
 	int pronoun = wgetch(storyPrompt);
 
 	//pronnoun array
-	std::array<str, 4> pronouns;
+	std::array<str, 5> pronouns;
 
 	//pronoun select
 	switch ((char)pronoun)
 	{
 	case 'h':
 	case 'H':
-		pronouns = {"he", "him", "his", "his"};
+		pronouns = {"he", "him", "his", "his", "he is"};
 		break;
 	
 	case 's':
 	case 'S':
-		pronouns = {"she", "her", "her", "hers"};
+		pronouns = {"she", "her", "her", "hers", "she is"};
 		break;
 
 	case 't':
 	case 'T':
-		pronouns = {"they", "them", "their", "thiers"};
+		pronouns = {"they", "them", "their", "thiers", "they are"};
 		break;
 	
 	default:
@@ -223,7 +259,7 @@ chooseNoun:
 	wgetch(storyPrompt);
 	wprintw(storyPrompt, "\nBeing yellow %s was banished from goblin society.", name.c_str());
 	wgetch(storyPrompt);
-	wprintw(storyPrompt, "\n%s is now cold and alone on %s", pronouns[0].c_str(), mountainName.c_str());
+	wprintw(storyPrompt, "\n%s now cold and alone on %s", pronouns[4].c_str(), mountainName.c_str());
 	wgetch(storyPrompt);
 
 	//enters game
@@ -244,6 +280,8 @@ chooseNoun:
 	wgetch(reJinView);
 };
 
+
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████
 
 int main(int argc, char** argv) {
 
@@ -301,19 +339,18 @@ title:
 
 	//prints title in bold yellow
 	attron(A_BOLD); //bold
-	attron(COLOR_PAIR(1)); // yellow
+	colorate(stdscr, 1); // yellow
 
 	mvprintw(2, middle(title.length()), "%s", title.c_str());
 
-	attroff(COLOR_PAIR(1)); // unbold
-	attroff(A_BOLD); // unyellow
+	attroff(A_BOLD); // unbold
 
 	//prints flavortext in cyan
-	attron(COLOR_PAIR(2)); // cyan
+	colorate(stdscr, 2); // cyan
 	
 	mvprintw(3, middle(flvrtxt.length()), "%s", flvrtxt.c_str());
 
-	attroff(COLOR_PAIR(2)); // uncyan
+	colorate(stdscr, 0); // and back
 
 	//main menu window
 	WINDOW* mainmenu = newwin(10, 20, 5, middle(20));
