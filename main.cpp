@@ -28,17 +28,20 @@
 
 using str = std::string;
 
-str planetName = "I don't know yet";
-str mountainName = "Mt. Cheesecutter";
+//defines constants
+const str planetName = "I don't know yet";
+const str mountainName = "Mt. Cheesecutter";
 
 int termx, termy;
 
+//defines po2 struct
 struct pos2 {
 	int x, y;
 };
 
 pos2 cursorpos = {0, 0};
 
+//defines middle function and it's overloads
 inline int middle(int chars) {
 	return termx/2-chars/2;
 };
@@ -48,23 +51,31 @@ inline int middle(int chars, int winx) {
 };
 
 
+//defines tile struct
 struct Tile {
 	int tile, state;
 };
 
+//defines TileChar struct
 struct TileChar {
 	str c;
 	int pair;
 };
 
 
+//defines static tile conversion matrix
 std::vector<std::vector<TileChar>> tileChars = {{{" ", 0},{"█",0},{",",0}}};
 
 
+//defines Layer class
 class Layer {
 public:
+	//defines tile buffer
 	std::array<std::array<Tile, 80>, 35> tiles;
+
+	//constructor for Layey class
 	Layer() {
+		//fills tile buffer with debug tile in the floor state
 		for(int y = 0; y < 35; y++) {
 			for(int x = 0; x < 80; x++)  {
 				tiles[y][x].tile = 0;
@@ -73,27 +84,38 @@ public:
 		}
 	}
 
+	//gets tile at position
 	inline Tile gettl(int y, int x) {
 		return tiles[y][x];
 	}
 
+	//gets TileChar for tile at position
 	inline TileChar gettlch(int y, int x) {
 		Tile tile = gettl(y,x);
 		return tileChars[tile.tile][tile.state];
 	}
 
+	//prints tile at position
 	void PrintTile(WINDOW* win, int y, int x) {
+		//gets TileChar for tile at position
 		TileChar tile = gettlch(y,x);
+
+		//enable tiles color pair
 		if(tile.pair != 0) {
 			wattron(win, COLOR_PAIR(tile.pair));
 		}
+
+		//prints tile at position
 		mvwprintw(win,y,x, "%s", tile.c.c_str());
+
+		//disables tiles color pair
 		if(tile.pair != 0) {
 			wattroff(win, COLOR_PAIR(tile.pair));
 		}
 	}
 
 	void PrintGrid(WINDOW* win) {
+		//prints whole grid of tiles in selected window
 		for(int y = 0; y < 35; y++) {
 			for(int x = 0; x < 80; x++)  {
 				PrintTile(win, y, x);
@@ -118,9 +140,12 @@ inline void c2p() {
 
 void game() {
 	clear();
+	//creates storyPrompt
 	WINDOW* storyPrompt = newwin(10, 80, middle(10, termy), middle(80));
 	refresh();
 	wrefresh(storyPrompt);
+
+
 	wprintw(storyPrompt, "On the planet of %s,", planetName.c_str());
 	wgetch(storyPrompt);
 	wprintw(storyPrompt, " goblins come in many different colors!");
@@ -130,9 +155,13 @@ void game() {
 	wprintw(storyPrompt, " Red and blue goblins hate eachother.");
 	wgetch(storyPrompt);
 	wprintw(storyPrompt, "\nBut one day a yellow Goblin was born, and their name is...\nName: ");
+
 	str name = "";
+
 	keypad(storyPrompt, true);
+
 	int key = wgetch(storyPrompt);
+
 	while(key != 10) {
 		//backspace logic
 		if(key == KEY_BACKSPACE) {
@@ -142,7 +171,9 @@ void game() {
 			name.pop_back();
 			//reprints name
 			int wx = getmaxx(storyPrompt);
+
 			move(getcury(storyPrompt), 0);
+
 			wclrtoeol(storyPrompt);
 			mvwprintw(storyPrompt, getcury(storyPrompt), 6, "%s", name.c_str());
 			}
@@ -314,15 +345,21 @@ title:
 
 		//procceses input
 		switch(key) {
+			//moves menu option select up
 			case KEY_UP:
 				choice--;
+				//checks if you need to loop
 				if(choice == -1) {
+					//loops
 					choice = 4;
 				}
 				break;
+			//moves menu option select down
 			case KEY_DOWN:
 				choice++;
+				//checks if you need to loop
 				if(choice == 5) {
+					//loops
 					choice = 0;
 				}
 				break;
@@ -355,10 +392,12 @@ title:
 		clear();
 		goto title;
 	} else if(choice == 3) {
+		//returns to the main menu in order to cycle the flavortext
 		flvrtxt.clear();
 		clear();
 		goto title;
 	} else if(choice == 4) {
+		//exits the game
 		endwin();
 		return 0;
 	}
