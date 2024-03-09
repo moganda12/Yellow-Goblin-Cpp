@@ -51,11 +51,15 @@ inline int middle(int chars, int winx) {
 	return winx/2-chars/2;
 };
 
-inline void nwbgdset(window win ,short int pair) {
+inline void nwbgdset(window win, short int pair, int attr) {
 	cchar_t cch;
-	setcchar(&cch, L" ", NULL, pair, NULL);
+	setcchar(&cch, L" ", attr, pair, NULL);
 	wbkgrndset(win, &cch);
 };
+
+inline void colorate(window win, short pair, int attr) {
+	wattr_set(win, attr, pair, NULL);
+}
 
 inline void colorate(window win, short pair) {
 	wattr_set(win, NULL, pair, NULL);
@@ -110,18 +114,11 @@ public:
 		//gets TileChar for tile at position
 		TileChar tile = gettlch(y,x);
 
-		//enable tiles color pair
-		if(tile.pair != 0) {
-			wattron(win, COLOR_PAIR(tile.pair));
-		}
+		//sets tiles color pair
+		colorate(win, tile.pair);
 
 		//prints tile at position
 		mvwprintw(win,y,x, "%s", tile.c.c_str());
-
-		//disables tiles color pair
-		if(tile.pair != 0) {
-			wattroff(win, COLOR_PAIR(tile.pair));
-		}
 	}
 
 	void PrintGrid(WINDOW* win) {
@@ -147,37 +144,59 @@ public:
 
 class Entity {
 private:
-	str c;
-	int pair;
+	TileChar tile;
 
 public:
 	int y;
 	int x;
 
-	Entity(int starty, int startx) {
-		y = starty;
-		x = startx;
+	Entity(int starty, int startx, TileChar representation) {
+		this->y = starty;
+		this->x = startx;
+		this->tile = representation;
 	};
 
-	void draw(WINDOW* win) {
-		if (pair != 0) {
-			attron(COLOR_PAIR(pair));
-		}
-		
+	void draw(window win) {
+		colorate(win, tile.pair);
+
+		mvwprintw(win, y,x, "%s", tile.c.c_str());
 	}
 };
 
+class Player : public Entity {
+public:
 
+	int regionx, regiony = 0;
+	int worldx, worldy = 0;
+
+	Player(int starty, int startx) : Entity(starty, startx, {"☺", 1}) {}
+
+	void move(int y, int x) {
+		this->y += y;
+		this->x += x;
+		if(this->y < 0) {
+			this->y = 0;
+		} else if(this->y > 39) {
+			this->y = 39;
+		};
+		if(this->x < 0) {
+			this->x = 0;
+		} else if(this->x > 79) {
+			this->x = 79;
+		};
+	}
+};
 
 inline void c2p() {
 	move(cursorpos.y, cursorpos.x);
 }
 
+//██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
 
 void game() {
 	clear();
 	//creates storyPrompt
-	WINDOW* storyPrompt = newwin(10, 80, middle(10, termy), middle(80));
+	window storyPrompt = newwin(10, 80, middle(10, termy), middle(80));
 	refresh();
 	wrefresh(storyPrompt);
 
@@ -198,6 +217,7 @@ void game() {
 
 	int key = wgetch(storyPrompt);
 
+	curs_set(2);
 	while(key != 10) {
 		//backspace logic
 		if(key == KEY_BACKSPACE) {
@@ -221,6 +241,7 @@ void game() {
 		//gets key
 		key = wgetch(storyPrompt);
 	}
+	curs_set(0);
 
 	//propmts user to select pronouns
 	wprintw(storyPrompt, "\nPronouns: he/him[h] she/her[s]  they/them[t]");
@@ -267,7 +288,7 @@ chooseNoun:
 	refresh();
 
 	//displays regoin
-	WINDOW* reJinView = newwin(35, 80, 0, middle(80));
+	window reJinView = newwin(35, 80, 0, middle(80));
 	refresh();
 	wrefresh(reJinView);
 
@@ -276,12 +297,40 @@ chooseNoun:
 	SpamtonGSpamton.setState(1, 20, 34);
 
 	SpamtonGSpamton.PrintGrid(reJinView);
+
+	Player player(10,10);
+
+	player.draw(reJinView);
+
+	keypad(reJinView, true);
+	
+	key = wgetch(reJinView);
+	while(true) {
+		switch(key) {
+			case KEY_UP:
+				move(-1, 0);
+				break;
+			case KEY_DOWN:
+				move(1, 0);
+				break;
+			case KEY_LEFT:
+				move(0, -1);
+				break;
+			case KEY_RIGHT:
+				move(0, 1);
+				break;
+		}
+		SpamtonGSpamton.PrintGrid(reJinView);
+		player.draw(reJinView);
+		key = wgetch(reJinView);
+	};
+	
 	c2p();
 	wgetch(reJinView);
 };
 
 
-//████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+//██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
 
 int main(int argc, char** argv) {
 
@@ -292,6 +341,7 @@ int main(int argc, char** argv) {
 	initscr();
 	cbreak();
 	noecho();
+	curs_set(0);
 
 	if(!has_colors()) {
 		printw("you may not run this program without color support");
@@ -326,10 +376,11 @@ int main(int argc, char** argv) {
 
 	init_pair(1, LIGHTYELLOW, BLACK);
 	init_pair(2, LIGHTCYAN, BLACK);
+	init_pair(3, DARKYELLOW, BLACK);
 
 	//title screen stuff
 	const str title =  "YellowGoblin v0.0.0_0v0";
-	const str flvrtxts[] = {"A game by Joshua B. Smith", "On the WHOIS domain name datatbase", "A cup of tea", "Cyan", "WHOIS Joshua B. Smith", "You Yumpster", "╠═════════════════╣", "The bee's knees", "CURSE YOU GORGAINA", "The letter \"O\" is pointless"};
+	const str flvrtxts[] = {"A game by Joshua B. Smith", "On the WHOIS domain name datatbase", "A cup of tea", "Cyan", "WHOIS Joshua B. Smith", "You Yumpster", "╠═════════════════╣", "The bee's knees", "CURSE YOU GORGAINA", "The letter \"O\" is pointless", "This is what you call humor?! Pathetic."};
 
 title:
 	//selects flavortext
@@ -338,12 +389,10 @@ title:
 	str flvrtxt = flvrtxts[rand() % sizeof(flvrtxts)/sizeof(str)];
 
 	//prints title in bold yellow
-	attron(A_BOLD); //bold
 	colorate(stdscr, 1); // yellow
+	attron(A_BOLD); //bold
 
 	mvprintw(2, middle(title.length()), "%s", title.c_str());
-
-	attroff(A_BOLD); // unbold
 
 	//prints flavortext in cyan
 	colorate(stdscr, 2); // cyan
