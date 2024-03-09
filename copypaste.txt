@@ -2,8 +2,8 @@
 const wchar darkShade = L'▓';
 const wchar meduimShade = L'▒';
 const wchar lightShade = L'░';
-const wchar smile = L'☺';
-const wchar blackSmile = L'☻';
+☺
+☻
 const wchar blackHeart = L'♡';
 const wchar doubleCorner1 = L'╔';
 const wchar doubleDownT = L'╦';
