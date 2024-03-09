@@ -8,6 +8,9 @@
 #include <chrono>
 #include <vector>
 
+#include "./CGTextLib/player.hpp"
+#include "./CGTextLib/types.hpp"
+
 
 #define BLACK 0
 #define DARKRED 1
@@ -35,11 +38,6 @@ const str mountainName = "Mt. Cheesecutter";
 
 int termx, termy;
 
-//defines po2 struct
-struct pos2 {
-	int x, y;
-};
-
 pos2 cursorpos = {0, 0};
 
 //defines middle function and it's overloads
@@ -60,18 +58,6 @@ inline void nwbgdset(window win ,short int pair) {
 inline void colorate(window win, short pair) {
 	wattr_set(win, NULL, pair, NULL);
 }
-
-//defines tile struct
-struct Tile {
-	int tile, state;
-};
-
-//defines TileChar struct
-struct TileChar {
-	str c;
-	int pair;
-};
-
 
 //defines static tile conversion matrix
 std::vector<std::vector<TileChar>> tileChars = {{{" ", 0},{"█",0},{",",0}}};
