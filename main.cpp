@@ -29,9 +29,6 @@
 #define LIGHTCYAN 14
 #define WHITE 7
 
-using str = std::string;
-using window = WINDOW*;
-
 //defines constants
 const str planetName = "I don't know yet";
 const str mountainName = "Mt. Cheesecutter";
@@ -54,14 +51,6 @@ inline void nwbgdset(window win, short int pair, int attr) {
 	setcchar(&cch, L" ", attr, pair, NULL);
 	wbkgrndset(win, &cch);
 };
-
-inline void colorate(window win, short pair, int attr) {
-	wattr_set(win, attr, pair, NULL);
-}
-
-inline void colorate(window win, short pair) {
-	wattr_set(win, NULL, pair, NULL);
-}
 
 //defines static tile conversion matrix
 std::vector<std::vector<TileChar>> tileChars = {{{" ", 0},{"█",0},{",",0}}};
@@ -124,52 +113,6 @@ public:
 	void setTile(int tile, int y, int x) {
 		//Set the tile at yx coordinate
 		tiles[y][x].tile = tile;
-	}
-};
-
-
-class Entity {
-private:
-	TileChar tile;
-
-public:
-	int y;
-	int x;
-
-	Entity(int starty, int startx, TileChar representation) {
-		this->y = starty;
-		this->x = startx;
-		this->tile = representation;
-	};
-
-	void draw(window win) {
-		colorate(win, tile.pair);
-
-		mvwprintw(win, y,x, "%s", tile.c.c_str());
-	}
-};
-
-class Player : public Entity {
-public:
-
-	int regionx, regiony = 0;
-	int worldx, worldy = 0;
-
-	Player(int starty, int startx) : Entity(starty, startx, {"☺", 1}) {}
-
-	void move(int y, int x) {
-		this->y += y;
-		this->x += x;
-		if(this->y < 0) {
-			this->y = 0;
-		} else if(this->y > 39) {
-			this->y = 39;
-		};
-		if(this->x < 0) {
-			this->x = 0;
-		} else if(this->x > 79) {
-			this->x = 79;
-		};
 	}
 };
 
